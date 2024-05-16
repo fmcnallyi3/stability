@@ -1,6 +1,8 @@
 This folder contains scripts to check the stability of the detector as 
 well as the processing of the root and I3 files. 
 
+## Files
+
 directories.py
  - Establishes a default set of paths for this project
 
@@ -47,7 +49,7 @@ submitter
  - Scripts for the submission of jobs (root_submitter) to the cluster
 
 
-Process:
+##Process
  - first time only:
     - run directories.py to create default paths
     - download good runs from i3live (https://live.icecube.wisc.edu/snapshots/)
