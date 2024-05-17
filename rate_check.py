@@ -19,8 +19,8 @@ if __name__ == "__main__":
             default=f'{stab.data}/rates.json',
             help='Json file containing rate information')
     p.add_argument('--pdiff', dest='pdiff',
-            default=5.,
-            help='% difference marking a significant rate change (5,10,...)')
+            type=float, default=5,
+            help='percent diff marking a significant rate change (5,10,...)')
     p.add_argument('-o', '--outdir', dest='outdir',
             default=stab.rate_plots,
             help='Output directory for files')

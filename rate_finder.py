@@ -60,6 +60,7 @@ if __name__ == "__main__":
         cfg_info = []
 
         # Run through every day present in root files
+        i = 0
         for day, runs in root_data[cfg].items():
 
             # Root summary for the day
