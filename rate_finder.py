@@ -19,9 +19,6 @@ if __name__ == "__main__":
     # Load default project-associated paths
     stab.setup_dirs()
 
-    # Run over all detector configurations by default
-    configs = [f'IC86-{yy}' for yy in range(2011,2023)]
-
     # File locations
     map_dir = '/data/user/fmcnally/anisotropy/maps'
 
@@ -40,6 +37,9 @@ if __name__ == "__main__":
     print('Loading root data...')
     with open(f'{stab.data}/root_summary.json', 'r') as f:
         root_data = json.load(f)
+
+    # Use root data to get list of detector configurations
+    configs = sorted(root_data.keys())
 
     # String formatting for header, daily output, and run details
     h = f'\trun     - {"t (i3)":<7} - {"t (root)":<7} - {"events":<10} - rate'
@@ -66,7 +66,7 @@ if __name__ == "__main__":
             cfg_info += [f'\n{day}']
             t_root = sum([run['livetime'] for r, run in runs.items()
                         if r not in badruns])
-            n_root = sum([run['events'] for r, run in runs.items()i
+            n_root = sum([run['events'] for r, run in runs.items()
                         if r not in badruns])
             cfg_info += [day_formatter(t_root, n_root, 'root')]
             rates['root'][cfg][day] = n_root/t_root
@@ -75,11 +75,11 @@ if __name__ == "__main__":
             cfg_info += [h]
             for run, info in runs.items():
 
-                # Note if run is not in root files
-                #try: t_i3 = i3_livetime[cfg][day][run]
-                t_i3 = i3_livetime[cfg][day][run]
-                #except KeyError:
-                #    t_i3 = 'N/A'
+                # Note if run is not in good run list
+                try: t_i3 = i3_livetime[cfg][day][run]
+                except KeyError:
+                    print(f'{cfg} {day} Run{run} not found in good run list!')
+                    t_i3 = 'N/A'
 
                 t_root = info['livetime']
                 n_root = info['events']

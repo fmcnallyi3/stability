@@ -41,10 +41,10 @@ def get_livetime(goodrunfile, run2cfgfile):
 
         # Instate each day as a key for the dictionary
         day = run_info['good_tstart'].split(' ')[0]
-        run = run_info['run']
+        run = str(run_info['run'])
 
         # Ignore runs that are before/after the dates of the run dictionary
-        try: cfg = run2cfg[str(run)]
+        try: cfg = run2cfg[run]
         except KeyError:
             continue
 
