@@ -28,7 +28,7 @@ if __name__ == "__main__":
 
     # Extract detector livetime and bad runs from good run list
     print('Loading livetimes from i3live...')
-    goodrunfile = f'{stab.data}/goodrunlist.txt'
+    goodrunfile = f'{stab.data}/goodrunlist.json'
     run2cfg = f'{stab.data}/run2cfg.json'
     i3live = get_livetime(goodrunfile, run2cfg)
     badruns = get_bad_runs(goodrunfile)
