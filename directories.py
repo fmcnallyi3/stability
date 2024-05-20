@@ -19,6 +19,11 @@ def setup_dirs(verbose=True):
     fits_out = f'{data}/fits_summaries'
     rate_plots = f'{data}/rate_plots'
 
+    # Make sure the desired output paths exist
+    # If something is broken, it's probably this (didn't test it!)
+    for output_path in [data, root_out, fits_out, rate_plots]:
+        os.makedirs(output_path, exist_ok=True)
+
 if __name__ == "__main__":
 
     setup_dirs()
