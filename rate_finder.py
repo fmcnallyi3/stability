@@ -23,7 +23,7 @@ if __name__ == "__main__":
     map_dir = '/data/user/fmcnally/anisotropy/maps'
 
     # Extract livetime and bad runs from good run list
-    goodrunfile = f'{stab.data}/goodrunlist.txt'
+    goodrunfile = f'{stab.data}/goodrunlist.json'
     run2cfg = f'{stab.data}/run2cfg.json'
     i3_livetime = get_livetime(goodrunfile, run2cfg)
     badruns = get_bad_runs(goodrunfile)
