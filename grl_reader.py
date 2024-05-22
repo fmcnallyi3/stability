@@ -17,7 +17,7 @@ def get_bad_runs(goodrunfile):
 
     for run_info in i3_data:
         if run_info['good_i3'] == False:
-            badruns.append(run_info['run'])
+            badruns.append(str(run_info['run']))
 
     return sorted(set(badruns))
 
