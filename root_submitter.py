@@ -22,6 +22,9 @@ if __name__ == "__main__":
     p.add_argument('-o', '--outDir', dest='outDir',
             default=stab.root_out,
             help='Output directory')
+    p.add_argument('--overwrite', dest='overwrite',
+            default=False, action='store_true',
+            help='Overwrite existing output summary files')
     args = p.parse_args()
 
 
