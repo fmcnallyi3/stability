@@ -12,9 +12,6 @@ if __name__ == "__main__":
     stab.setup_dirs()
 
     p = argparse.ArgumentParser()
-    #p.add_argument('-c', '--config', dest='config',
-    #        nargs='+',
-    #        help='Detector configuration (IC86-2011, IC86-2012, ...)')
     p.add_argument('--rate_file', dest='rate_file',
             default=f'{stab.data}/rates.json',
             help='Json file containing rate information')
@@ -41,11 +38,14 @@ if __name__ == "__main__":
     for ftype in rates.keys():
 
         all_rates = []
+        all_dates = []
         configs = sorted(rates[ftype].keys())
         for cfg in configs:
 
             cfg_rates = [r for day, r in rates[ftype][cfg].items()]
+            cfg_dates = [day for day, r in rates[ftype][cfg].items()]
             all_rates += cfg_rates
+            all_dates += cfg_dates
 
             if args.verbose:
                 # Find and print days with bad rates
@@ -71,17 +71,37 @@ if __name__ == "__main__":
             ax.plot(cfg_rates)
             ax.set_ylim(1600, 3000)
 
+            # Adjust x-axis labels to show dates
+            fig.canvas.draw()
+            labels = [item.get_text() for item in ax.get_xticklabels()]
+            for i in range(1, len(labels)):
+                try: labels[i] = cfg_dates[int(labels[i])]
+                except IndexError:
+                    labels[i] = ''
+            ax.set_xticklabels(labels, rotation=45, ha='right')
+
             # Save plot to png file
             out = f'{args.outdir}/rates_{ftype}_{cfg}.png'
-            plt.savefig(out)
+            plt.savefig(out, bbox_inches="tight")
             plt.close()
 
         # Plot for all years
         fig, ax = plt.subplots(figsize=(20,7))
         ax.plot(all_rates)
         ax.set_ylim(1600, 3000)
+
+        # Adjust x-axis labels to show dates
+        fig.canvas.draw()
+        labels = [item.get_text() for item in ax.get_xticklabels()]
+        for i in range(1, len(labels)):
+            try: labels[i] = all_dates[int(labels[i])]
+            except IndexError:
+                labels[i] = ''
+        ax.set_xticklabels(labels, rotation=45, ha='right')
+
+
         out = f'{args.outdir}/rates_{ftype}_IC86.png'
-        plt.savefig(out)
+        plt.savefig(out, bbox_inches="tight")
         plt.close()
 
     print(f'Finished. Plots saved to {args.outdir}')
