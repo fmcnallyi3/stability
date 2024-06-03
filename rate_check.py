@@ -10,7 +10,7 @@ def save_info(day, cfg, f):
     f.write(f'{cfg},')
     f.write(f'{day}\n')
 
-    with open(f'/data/user/rchapagain/stability/{cfg}_summary.txt', 'r') as summary:
+    with open(f'{stab.data}/{cfg}_summary.txt', 'r') as summary:
         lines = summary.readlines()
         recording = False
 
