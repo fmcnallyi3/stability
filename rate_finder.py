@@ -44,10 +44,12 @@ if __name__ == "__main__":
     # String formatting for header, daily output, and run details
     h = f'\trun     - {"t (i3)":<7} - {"t (root)":<7} - {"events":<10} - rate'
     def day_formatter(t, n, root_fits):
-        return f'\t{root_fits:<7} - {t:<7} - {n:<11} - {n/t:.2f}'
+        rate = 3000 if t==0 else n/t
+        return f'\t{root_fits:<7} - {t:<7} - {n:<11} - {rate:.2f}'
     def run_formatter(run, t_i3, t, n):
         gb = 'b' if run in badruns else 'g'
-        return f'\t{run}{gb} - {t_i3:<7} - {t:<7} - {n:<11} - {n/t:.2f}'
+        rate = 3000 if t==0 else n/t
+        return f'\t{run}{gb} - {t_i3:<7} - {t:<7} - {n:<11} - {rate:.2f}'
 
 
     # Save rates from root and fits files
