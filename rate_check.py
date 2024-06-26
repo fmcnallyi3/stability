@@ -35,7 +35,7 @@ def main():
         rates = json.load(f)
 
     # Store information on bad rates
-    header = 'Configuration, Day, Source, t (i3), t(root), Events, Rate, Error'
+    header = 'Configuration, Day, Source, t (i3), t (root), Events, Rate, Error'
     br_info = [header + '\n']
 
     # Produce rate plots for root and fits data
