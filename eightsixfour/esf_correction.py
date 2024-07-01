@@ -2,12 +2,13 @@
 
 ##==========================================================================## 
 ## Goal: find the "86400" (eight-six-four) errors present in the DST ROOT   ##
-## files where the day suddenly jumps forward and correct them              ##
+## files where the day suddenly jumps forward (or back) and correct them    ##
 ##==========================================================================## 
 
 import argparse
 import uproot
 import numpy as np
+from glob import glob
 
 
 if __name__ == "__main__":
@@ -17,13 +18,12 @@ if __name__ == "__main__":
             'ROOT files, organized by each run in each day')
     p.add_argument('-i', '--infiles', dest='infiles',
             nargs='+',
-            #default=['/data/ana/CosmicRay/Anisotropy/IceCube/IC86-2017/2017-05-21/ic86_simpleDST_2017-05-21_run129535_part04.root'],
-            default=['/data/ana/CosmicRay/Anisotropy/IceCube/IC86-2012/IC86-2012_simpleDST_2012-06-28_p09.root'],
             help='File(s) to retrieve the information from')
-    p.add_argument('-o', '--out', dest='out',
-            help='Name of output text file to store info')
     args = p.parse_args()
 
+    if args.infiles == None:
+        prefix = '/data/ana/CosmicRay/Anisotropy/IceCube/86400_errors'
+        args.infiles = sorted(glob(f'{prefix}/**/*.root', recursive=True))
 
     # Data storage
     d = {}
@@ -31,7 +31,7 @@ if __name__ == "__main__":
     # Run through each input file
     for infile in args.infiles:
 
-        print(f'Working on {infile}...')
+        print(f'\nWorking on {infile}...')
 
         # Open root file
         f = uproot.open(infile)
@@ -39,44 +39,36 @@ if __name__ == "__main__":
         # Identify and fix errors in the mjd line
         mjd = f['CutDST']['ModJulDay'].array(library='np')
         dt = mjd[1:] - mjd[:-1]
-        idx = np.argmax(dt)
+        bad_events = np.where(np.abs(dt) > 0.9)[0]
 
         # Immediately quit if error not present
-        if dt.max() < 0.9:
+        if len(bad_events) == 0:
             print('  No 86400 errors found in this file!')
             f.close()
             continue
 
-        # Error type 1: 56106.9996 --> 56107.9997 --> ... --> 56107.0001
-        if (mjd[idx] % 1) > 0.9:
-            print('Error type 1 found')
-            start, stop = np.where(np.abs(dt) > 0.9)[0]
+        # Errors look like: 56106.9996 --> 56107.9997 --> ... --> 56107.0001
+        #               OR: 56106.9999 --> 56106.0000 --> ... --> 56107.0002
+        if len(bad_events) == 2:
+            print('  Error found!')
+            start, stop = bad_events
+            correction = -1 if mjd[start+1] > mjd[start] else 1
             display_range = np.arange(start, stop+2)
             print('Suggested correction:')
             print(mjd[display_range])
-            mjd[start+1:stop+1] -= 1
-            print('  -->')
-            print(mjd[display_range])
-
-        # Error type 2: 57894.9999 --> 57894.0 --> 57895.0001
-        elif (mjd[idx] % 1) < 0.1:
-            print('Error type 2 found')
-            display_range = np.arange(idx-2, idx+3)
-            print(f'Suggested correction:')
-            print(mjd[display_range])
-            mjd[idx] += 1
+            mjd[start+1:stop+1] += correction
             print('  -->')
             print(mjd[display_range])
 
         # Catch weird cases
         else:
-            print("Well, that's unexpected!")
+            print("Well, that's unexpected...")
             f.close()
             raise
 
-
         # Having identified the error, write corrected tree to a new file
-        f_new = uproot.recreate('my_test.root')
+        outfile = infile.replace('.root', '_esffix.root')
+        f_new = uproot.recreate(outfile)
 
         # Prepare batch size and keys for copying
         batchsize = int(len(mjd)/10)
@@ -125,4 +117,5 @@ if __name__ == "__main__":
         f.close()
         f_new.close()
 
-        print('Finished!\n')
+        print('Finished!')
+        print(f'New file written to {outfile}\n')

@@ -19,6 +19,9 @@ if __name__ == "__main__":
             help='Option for running off cluster to test')
     p.add_argument('-c', '--config', dest='config',
             help='Detector season [IC86-2011 - IC86-2022]')
+    p.add_argument('-d', '--dates', dest='dates',
+            nargs='*',
+            help='List of dates to run over')
     p.add_argument('-o', '--outDir', dest='outDir',
             default=stab.root_out,
             help='Output directory')
@@ -37,7 +40,10 @@ if __name__ == "__main__":
     files.sort()
 
     # Group all files according to a given date
-    dates = sorted(set([re.findall('\d{4}-\d{2}-\d{2}', f)[-1] for f in files]))
+    dates = args.dates
+    if dates == None:
+        dates = set([re.findall('\d{4}-\d{2}-\d{2}', f)[-1] for f in files])
+    dates = sorted(dates)
     if args.test:
         dates = dates[:2]
 
@@ -65,7 +71,7 @@ if __name__ == "__main__":
         cmd = f'{stab.home}/root_extractor.py -i {files_i} -o {out}'
 
         if os.path.isfile(out) and not args.overwrite:
-            print(f'Files {out} already exists! Skipping...')
+            #print(f'Files {out} already exists! Skipping...')
             continue
 
         pysubmit(cmd, npx_out, test=args.test, header=header, sublines=sublines)

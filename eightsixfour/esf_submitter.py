@@ -16,9 +16,6 @@ if __name__ == "__main__":
     p.add_argument('-d', '--dates', dest='dates', type=str,
             default=None, nargs='*',
             help='Dates to process [yyyy-mm-dd]')
-    p.add_argument('--overwrite', dest='overwrite',
-            default=False, action='store_true',
-            help='Option to overwrite existing map files')
 
     args = p.parse_args()
 
@@ -27,35 +24,20 @@ if __name__ == "__main__":
     fileList = []
     root_dir = '/data/ana/CosmicRay/Anisotropy/IceCube'
     root_path = f'{root_dir}/{args.config}'
-    masterList = glob(f'{root_path}/*.root')
-    # Newer configurations use directories for each day
-    if masterList == []:
-        masterList = glob(f'{root_path}/*/*.root')
+    masterList = glob(f'{root_path}/**/*.root', recursive=True)
     masterList.sort()
 
+    # Filter by desired dates
     for rootFile in masterList:
-
-        # Filter by desired dates
         date = re.findall('\d{4}-\d{2}-\d{2}', rootFile)[-1]
-        if date not in args.dates:
-            continue
-
-        # Apply naming conventions to find existing files
-        # ...
-        # Overwrite or omit existing files
-        #if all([os.path.isfile(f) for f in testFiles]) and not args.overwrite:
-        #    continue
-        #for testFile in testFiles:
-        #    if os.path.isfile(testFile):
-        #        os.remove(testFile)
-
-        fileList.append(rootFile)
+        if date in args.dates:
+            fileList.append(rootFile)
 
     # Split into days for submission
     dateList = [re.findall('\d{4}-\d{2}-\d{2}', f)[-1] for f in fileList]
     dateList = sorted(list(set(dateList)))  # Limit to unique values
 
-    # "Day" files are not actually 24 hours
+    # "Day" files are not actually 24 hours (grouped by run)
     # Include previous and next runs (or full days when necessary)
     prev_dates, next_dates = [], []
     for date_str in dateList:
@@ -65,7 +47,6 @@ if __name__ == "__main__":
         next_dates += [(date + dt.timedelta(days=1)).strftime('%Y-%m-%d')]
 
     # Collect surrounding files to allow runs from midnight to midnight
-    # ("Daily" files grouped by run, not actually 24 hours)
     dayFiles = []
     for day, prev, post in zip(dateList, prev_dates, next_dates):
 
