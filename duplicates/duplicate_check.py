@@ -4,11 +4,14 @@ from glob import glob
 import numpy as np
 import json
 import re
+import os
 import matplotlib.pyplot as plt
 
 if __name__ == "__main__":
 
-    infiles = sorted(glob('duplicates_IC86-????.json'))
+    user = os.environ['USER']
+    prefix = f'/data/user/{user}/stability/duplicates'
+    infiles = sorted(glob(f'{prefix}/duplicates_IC86-????.json'))
     d = {}
 
     for i, infile in enumerate(infiles):
@@ -25,7 +28,7 @@ if __name__ == "__main__":
         ax.set_title(f'{cfg}')
         ax.set_xlabel('Root File')
         ax.set_ylabel('Percentage of Duplicate Events')
-        plt.savefig(f'duplicate_plot_{cfg}.png')
+        plt.savefig(f'{prefix}/duplicate_plot_{cfg}.png')
 
     keys = sorted(d.keys())
     values = np.array([d[key] for key in keys])
@@ -35,7 +38,7 @@ if __name__ == "__main__":
     ax.set_title('All Data')
     ax.set_xlabel('Root File')
     ax.set_ylabel('Percentage of Duplicate Events')
-    plt.savefig('duplicate_plot.png')
+    plt.savefig(f'{prefix}/duplicate_plot.png')
 
     print(values.min(), values.max())
     print(keys[values.argmax()])

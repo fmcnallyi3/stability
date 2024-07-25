@@ -5,15 +5,19 @@ import uproot
 from glob import glob
 import numpy as np
 import json
+import os
 
 if __name__ == "__main__":
+
+    user = os.environ['USER']
 
     p = argparse.ArgumentParser(
             description='Counts duplicate events in DST root files')
     p.add_argument('-c', '--config', dest='config',
             help='Detector configuration (IC86-2011 - IC86-2022')
-    p.add_argument('-o', '--out', dest='out',
-            help='Name of output text file to store info')
+    p.add_argument('-o', '--outdir', dest='outdir',
+            default=f'/data/user/{user}/stability/duplicates',
+            help='Name of output directory to store info')
     args = p.parse_args()
 
     root_dir = '/data/ana/CosmicRay/Anisotropy/IceCube'
@@ -42,7 +46,7 @@ if __name__ == "__main__":
 
         info[f_name] = p_dup
 
-    with open(f'duplicates_{args.config}.json', 'w') as f:
+    with open(f'{args.outdir}/duplicates_{args.config}.json', 'w') as f:
         json.dump(info, f)
 
 
