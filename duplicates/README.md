@@ -15,6 +15,10 @@ ROOT files that share the same exact values (MJD, zenith, etc.) except subevent
  - Counts and stores the number of duplicates in all root files for a given
    detector configuration
 
+`duplicate_submitter.py`
+ - Runs duplicate_correction.py over an entire year of data, submitting to the
+   cluster
+
 `README.md`
  - this file
 
@@ -25,5 +29,9 @@ ROOT files that share the same exact values (MJD, zenith, etc.) except subevent
     - using pzilberman's venv: 
       source /home/pzilberman/venvs/custom_py3-v4.3.0_cobalt/bin/activate
 
- - Identify 864 errors using rate_check.py in parent directory
- - Run esf_submitter.py with the bad dates
+ - Run duplicate_finder.py to collect information on duplicates present in root
+   files
+ - Run duplicate_check.py to visualize the results
+ - Run duplicate_submitter.py to find and remove duplicates
+ - Run mover.py to move original files with duplicates to a new directory and
+   rename _dupfix output files to be the new defaults
