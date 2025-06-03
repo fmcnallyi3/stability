@@ -7,7 +7,7 @@ import healpy as hp
 from glob import glob
 from collections import defaultdict
 
-from grl_reader import get_livetime, get_bad_runs
+from i3_grl import get_livetime, get_bad_runs
 import directories as stab
 
 

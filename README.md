@@ -1,5 +1,15 @@
-This folder contains scripts to check the stability of the detector as 
-well as the processing of the root and I3 files. 
+This folder contains scripts to check the stability of the detector as
+well as the processing of the root and I3 files.
+
+Notes for new users (Summer 2025): this project was written a while ago and I'm
+interested in faster/better ways to do some of the tasks it accomplishes. In
+general, your goals are to:
+- get the livetime from i3live (and number of events? is this possible?)
+- get the number of events from the maps (usually .fits files)
+- get the livetime and number of events from root (or hdf5, I'm not sure how
+  they're stored) files
+- be careful about which good run list is used and how. We need to mimic what
+  was used in the data processing by Loyola!
 
 ## Files
 
@@ -14,7 +24,7 @@ well as the processing of the root and I3 files.
 `fits_merge.py`
  - Merges count and livetime information from each detector configuration
 
-`grl_reader.py`
+`i3_grl.py`
  - Functions associated with reading the good run list from i3live, including
    livetime calculation and getting a list of bad runs
 
@@ -56,19 +66,19 @@ well as the processing of the root and I3 files.
     - download good runs from i3live (https://live.icecube.wisc.edu/snapshots/)
       and save in stab.data (see directories)
     - run run2cfg.py to create dictionary relating runs to detector configs
-      
+
  - Produce root summary files:
     - run one year at a time using root_submitter.py
     - when all finished, run root_merge.py to create summary file
-      
+
  - Produce fits summary files:
     - run fits_extractor.py (one year at a time, fine on cobalt)
     - when all finished, run fits_merge.py to create summary file
-      
+
  - Calculate and assess rates:
     - run rate_finder.py to calculate and save the rates
     - run rate_check.py to identify days/runs of concern
-      
+
  - Reprocessing (fmcnally):
     - move problematic root/fits files to temporary location
       - include daily root summary files!

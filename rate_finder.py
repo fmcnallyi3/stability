@@ -10,7 +10,7 @@
 import re
 import json
 
-from grl_reader import get_livetime, get_bad_runs
+from i3_grl import get_livetime, get_bad_runs
 import directories as stab
 
 
