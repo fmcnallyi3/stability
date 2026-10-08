@@ -1,3 +1,3 @@
-[submodule "icetop-cnn"]
-	path = icetop-cnn
-	url = https://github.com/fmcnallyi3/icetop-cnn
+[submodule "time_scramble"]
+	path = time_scramble
+	url = https://github.com/fmcnallyi3/time_scramble
