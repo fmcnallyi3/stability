@@ -1,0 +1,3 @@
+[submodule "icetop-cnn"]
+	path = icetop-cnn
+	url = https://github.com/fmcnallyi3/icetop-cnn
